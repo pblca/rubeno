@@ -3,9 +3,10 @@ from dotenv import load_dotenv
 from datetime import datetime
 from utils.db import db
 from utils.logger import log_setup
+from messages.messages import match_result_embed
 import shortuuid
 import discord
-from discord import app_commands
+from discord import app_commands, Member
 from discord.utils import get
 
 _log = log_setup(__name__)
@@ -44,13 +45,15 @@ async def match_log(
     :param two_wins: Player 2 Win Count
     """
 
-    def determine_winner(p1_wins, p2_wins):
-        if p1_wins > p2_wins:
-            return one.id
-        elif p1_wins == p2_wins:
-            return 'draw'
+    def determine_placement(p1_wins, p2_wins) -> ((Member, int), (Member, int), bool):
+        if p1_wins == p2_wins:
+            return (one, p1_wins), (two, p2_wins), True
+        elif p1_wins > p2_wins:
+            return (one, p1_wins), (two, p2_wins), False
         else:
-            return two.id
+            return (two, p2_wins), (one, p1_wins), False
+
+    placement = determine_placement(one_wins, two_wins)
 
     content = {
         "uuid": f'm.{shortuuid.random(length=8)}',
@@ -58,7 +61,7 @@ async def match_log(
         "guild": interaction.guild.id,
         "players": [one.id, two.id],
         "result": [one_wins, two_wins],
-        "winner": determine_winner(one_wins, two_wins)
+        "winner": placement[0][0].mention if not placement[2] else 'draw'
     }
 
     try:
@@ -69,7 +72,8 @@ async def match_log(
         raise e
 
     _log.info(f'Added Match: {content["uuid"]}')
-    await interaction.response.send_message(f'Winner: {one.mention} Match ID: {content["uuid"]}')
+
+    await interaction.response.send_message(embed=match_result_embed(placement))
 
 
 bot_client.run(os.getenv('BOT_KEY'))
