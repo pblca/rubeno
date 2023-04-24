@@ -1,13 +1,13 @@
 import os
 from datetime import datetime
 
-from utils.db import db
+from db.database_config import db
+from db.match import insert_match
 from utils.logger import log_setup
 from messages.match_response import match_result_embed
 import shortuuid
 import discord
 from discord import app_commands, Member
-from discord.utils import get
 
 _log = log_setup(__name__)
 
@@ -39,24 +39,14 @@ def command_match(bot):
                 return (two, p2_wins), (one, p1_wins), False
 
         placement = determine_placement(one_wins, two_wins)
-        content = {
-            "uuid": f'm.{shortuuid.random(length=8)}',
-            "ts": datetime.utcnow().isoformat(),
-            "guild": interaction.guild.id,
-            "players": [one.id, two.id],
-            "result": [one_wins, two_wins],
-            "winner": placement[0][0].mention if not placement[2] else 'draw'
-        }
 
         # TODO: ELO UPDATE
 
-        try:
-            db.col['match'].insert_one(content)
-        except Exception as e:
+        insert = insert_match(interaction, placement, one, two, one_wins, two_wins)
+
+        if insert:
+            await interaction.response.send_message(embed=match_result_embed(placement, insert["uuid"]))
+        else:
             await interaction.response.send_message(f'Failed to add match')
-            _log.error(e)
-            raise e
 
-        _log.info(f'Added Match: {content["uuid"]}')
 
-        await interaction.response.send_message(embed=match_result_embed(placement, content["uuid"]))

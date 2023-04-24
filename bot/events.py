@@ -1,7 +1,7 @@
 import os
 import discord
 
-from utils.db import db
+from db.database_config import db
 from utils.logger import log_setup
 
 _log = log_setup(__name__)

@@ -27,7 +27,7 @@ class RubenoBot:
     def setup(self):
         self.intents = discord.Intents.default()
         self.intents.message_content = True
-        self.client = discord.Client(intents=self.intents)
+        self.client = discord.Client(intents=self.intents, )
         self.tree = app_commands.CommandTree(client=self.client)
 
         """
