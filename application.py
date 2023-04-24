@@ -73,7 +73,7 @@ async def match_log(
 
     _log.info(f'Added Match: {content["uuid"]}')
 
-    await interaction.response.send_message(embed=match_result_embed(placement))
+    await interaction.response.send_message(embed=match_result_embed(placement, content["uuid"]))
 
 
 bot_client.run(os.getenv('BOT_KEY'))

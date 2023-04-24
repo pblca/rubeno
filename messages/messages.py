@@ -1,7 +1,7 @@
 import discord
 
 
-def match_result_embed(placement) -> discord.Embed:
+def match_result_embed(placement, match_id: str) -> discord.Embed:
     embed = discord.Embed(
         title='Match Results',
         description=f'{placement[0][1]} - {placement[1][1]}',
@@ -18,7 +18,11 @@ def match_result_embed(placement) -> discord.Embed:
         name='Rating Update',
         value='1500 (+27) / 1250 (-12)',
         inline=False
-    ).set_thumbnail(
-        url=placement[0][0].avatar.url
+    ).set_footer(
+        text=match_id
     )
+    if not placement[2]:
+        embed.set_thumbnail(
+            url=placement[0][0].avatar.url if placement[0][0].avatar else 'https://cdn.discordapp.com/embed/avatars/0.png'
+        )
     return embed
