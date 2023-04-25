@@ -44,9 +44,6 @@ def command_match(bot):
         p1_obj = upsert_player(one, interaction.guild.id)
         p2_obj = upsert_player(two, interaction.guild.id)
 
-        print(p1_obj.get('rating', None))
-        print(p2_obj.get('rating', None))
-
         ratings = calculate_match(
             p1=(p1_obj['rating'] if p1_obj.get('rating', None) else 1000, placement[0][1]),
             p2=(p2_obj['rating'] if p2_obj.get('rating', None) else 1000, placement[1][1])
