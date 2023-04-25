@@ -1,11 +1,9 @@
 import os
-from datetime import datetime
 
-from db.database_config import db
 from db.match import insert_match
 from utils.logger import log_setup
+from utils.elo import calculate_match
 from messages.match_response import match_result_embed
-import shortuuid
 import discord
 from discord import app_commands, Member
 
@@ -40,12 +38,13 @@ def command_match(bot):
 
         placement = determine_placement(one_wins, two_wins)
 
-        # TODO: ELO UPDATE
+        ratings = calculate_match(p1=(1500, placement[0][1]), p2=(1000, placement[1][1]))
+        _log.info(f'Rating Update: {ratings}')
 
-        insert = insert_match(interaction, placement, one, two, one_wins, two_wins)
+        insert = insert_match(interaction, placement)
 
         if insert:
-            await interaction.response.send_message(embed=match_result_embed(placement, insert["uuid"]))
+            await interaction.response.send_message(embed=match_result_embed(placement, ratings, insert["uuid"]))
         else:
             await interaction.response.send_message(f'Failed to add match')
 

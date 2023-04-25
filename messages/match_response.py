@@ -1,7 +1,7 @@
 import discord
 
 
-def match_result_embed(placement, match_id: str) -> discord.Embed:
+def match_result_embed(placement, ratings, match_id: str) -> discord.Embed:
     embed = discord.Embed(
         title='Match Results',
         description=f'{placement[0][1]} - {placement[1][1]}',
@@ -16,7 +16,7 @@ def match_result_embed(placement, match_id: str) -> discord.Embed:
         inline=True
     ).add_field(
         name='Rating Update',
-        value='1500 (+27) / 1250 (-12)',
+        value=f'{ratings[0][0] + ratings[0][1]} ({ratings[0][1]}) / {ratings[1][0] + ratings[1][1]} ({ratings[1][1]})',
         inline=False
     ).set_footer(
         text=match_id
