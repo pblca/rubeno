@@ -41,4 +41,7 @@ class RubenoBot:
         command_match(self)
         command_rating(self)
 
+        _log.info(f'Commands available (test): {list(self.tree._guild_commands[int(os.getenv("TEST_GUILD"))].keys())}')
+        _log.info(f'Commands available: {list(self.tree._global_commands.keys())}')
+
         return self

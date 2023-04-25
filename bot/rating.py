@@ -24,6 +24,8 @@ def command_rating(bot):
         :param user:
         :return:
         """
+        _log.info("Rating Command Received")
+
         selection = interaction.user
         if user:
             selection = user
