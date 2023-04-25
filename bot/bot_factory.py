@@ -2,6 +2,7 @@ import os
 
 from bot.events import register_events
 from bot.match import command_match
+from bot.rating import command_rating
 from utils.logger import log_setup
 import discord
 from discord import app_commands
@@ -38,5 +39,6 @@ class RubenoBot:
         """
         register_events(self)
         command_match(self)
+        command_rating(self)
 
         return self

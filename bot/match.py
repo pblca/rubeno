@@ -21,7 +21,8 @@ def command_match(bot):
             one: discord.Member,
             one_wins: int,
             two: discord.Member,
-            two_wins: int):
+            two_wins: int
+    ):
         """Log the results of a match
 
         :param interaction:
@@ -30,6 +31,7 @@ def command_match(bot):
         :param two: Player 2
         :param two_wins: Player 2 Win Count
         """
+        _log.info("Match Command Received")
 
         def determine_placement(p1_wins, p2_wins) -> ((Member, int), (Member, int), bool):
             if p1_wins == p2_wins:
