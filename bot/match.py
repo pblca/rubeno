@@ -1,8 +1,11 @@
 import os
 
 from db.match import insert_match
+from db.player import upsert_player, update_rating
+
 from utils.logger import log_setup
 from utils.elo import calculate_match
+
 from messages.match_response import match_result_embed
 import discord
 from discord import app_commands, Member
@@ -38,12 +41,24 @@ def command_match(bot):
 
         placement = determine_placement(one_wins, two_wins)
 
-        ratings = calculate_match(p1=(1500, placement[0][1]), p2=(1000, placement[1][1]))
+        p1_obj = upsert_player(one, interaction.guild.id)
+        p2_obj = upsert_player(two, interaction.guild.id)
+
+        print(p1_obj.get('rating', None))
+        print(p2_obj.get('rating', None))
+
+        ratings = calculate_match(
+            p1=(p1_obj['rating'] if p1_obj.get('rating', None) else 1000, placement[0][1]),
+            p2=(p2_obj['rating'] if p2_obj.get('rating', None) else 1000, placement[1][1])
+        )
+
         _log.info(f'Rating Update: {ratings}')
 
-        insert = insert_match(interaction, placement)
+        insert = insert_match(interaction, placement, ratings)
+        p1_update = update_rating(one, interaction.guild.id, ratings[0][0] + ratings[0][1])
+        p2_update = update_rating(two, interaction.guild.id, ratings[1][0] + ratings[1][1])
 
-        if insert:
+        if insert and p1_update and p2_update:
             await interaction.response.send_message(embed=match_result_embed(placement, ratings, insert["uuid"]))
         else:
             await interaction.response.send_message(f'Failed to add match')

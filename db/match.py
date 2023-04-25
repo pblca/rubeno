@@ -41,7 +41,7 @@ def insert_match(
         _log.error(e)
         return None
     else:
-        _log.info(f'Added Match: {content["uuid"]}')
+        _log.info(f'Recorded Match: {content["uuid"]}')
         return content
 
 
