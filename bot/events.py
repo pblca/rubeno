@@ -18,5 +18,5 @@ def register_events(bot):
         _log.info(f'Logged on as {bot.client.user}!')
         db.ping()
 
-        await bot.tree.sync(guild=discord.Object(id=os.getenv('TEST_GUILD')))
+        await bot.tree.sync()
         _log.info('Synced Commands')

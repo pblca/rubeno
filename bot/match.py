@@ -15,7 +15,7 @@ _log = log_setup(__name__)
 
 def command_match(bot):
     @app_commands.guild_only()
-    @bot.tree.command(name='match', guild=discord.Object(id=os.getenv('TEST_GUILD')))
+    @bot.tree.command(name='match')
     async def match_log(
             interaction: discord.Interaction,
             one: discord.Member,

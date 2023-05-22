@@ -13,7 +13,7 @@ _log = log_setup(__name__)
 
 def command_rating(bot):
     @app_commands.guild_only()
-    @bot.tree.command(name='rating', guild=discord.Object(id=os.getenv('TEST_GUILD')))
+    @bot.tree.command(name='rating')
     async def rating(
             interaction: discord.Interaction,
             user: discord.Member = None
