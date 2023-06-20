@@ -33,6 +33,12 @@ def command_match(bot):
         """
         _log.info("Match Command Received")
 
+        # Check if the user invoking the command has the 'Serenader' role
+        admin = discord.utils.get(interaction.guild.roles, name='Serenader')
+        if admin not in interaction.user.roles:
+            await interaction.response.send_message('You are not a Serenader')
+            return
+
         def determine_placement(p1_wins, p2_wins) -> ((Member, int), (Member, int), bool):
             if p1_wins == p2_wins:
                 return (one, p1_wins), (two, p2_wins), True
@@ -61,5 +67,7 @@ def command_match(bot):
             await interaction.response.send_message(embed=match_result_embed(placement, ratings, insert["uuid"]))
         else:
             await interaction.response.send_message(f'Failed to add match')
+
+
 
 
