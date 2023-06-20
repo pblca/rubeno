@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Union, Optional
-
+import pymongo
 import discord
 import shortuuid
 from pymongo.collection import ReturnDocument
@@ -42,10 +42,38 @@ def update_rating(user: discord.Member, guild_id, rating) -> Optional[dict]:
     }
 
     try:
-        r = db.col['player'].update_one({'d_id': user.id, 'guild': guild_id}, {'$set': content}, upsert=True)
+        r = db.col['player'].update_one(
+            {'d_id': user.id, 'guild': guild_id},
+            {'$set': content},
+            upsert=True
+        )
     except Exception as e:
         _log.error(e)
         return None
     else:
         _log.info(f'Recorded Rating: {user.id} : {rating}')
         return r.raw_result
+
+
+
+def get_leaderboard(bot, limit=10):
+    """Get the top players.
+
+    :param bot: The bot object.
+    :param limit: The number of players to return.
+    :return: A list of the top players.
+    """
+    collection = db.col['player']
+
+
+    # Query the database
+    leaderboard = collection.find().sort('rating', pymongo.DESCENDING).limit(limit)
+
+    # Convert the results to a list
+    leaderboard = list(leaderboard)
+
+    return leaderboard
+
+
+
+
